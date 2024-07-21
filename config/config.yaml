@@ -1,0 +1,10 @@
+mqtt:
+  broker: "tcp://broker.hivemq.com:1883"
+  clientID: "mqtt_relay"
+  topics:
+    - mqttTopic: "topic/one"
+      queueTopic: "queue_topic_one"
+    - mqttTopic: "topic/two"
+      queueTopic: "queue_topic_two"
+    - mqttTopic: "topic/three"
+      queueTopic: "queue_topic_three"

@@ -1,0 +1,41 @@
+# Build artifacts
+/bin/
+/build/
+/*.exe
+/*.out
+/*.test
+
+# Dependency directories
+/vendor/
+/go.sum
+/go.mod
+
+# IDE and editor configurations
+*.idea/
+*.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Logs
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+
+# Docker files
+*.dockerfile
+
+# Miscellaneous
+*.swp
+*.swo
+*.tmp
+*.bak
+*.old
+
+# Coverage files
+*.cov
+coverage.out
