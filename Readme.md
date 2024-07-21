@@ -1,7 +1,3 @@
-Here's a comprehensive and readable `README.md` for your MQTT relay project. This will help users understand how to set up, configure, and use your project effectively.
-
----
-
 # MQTT Relay
 
 ## Overview
