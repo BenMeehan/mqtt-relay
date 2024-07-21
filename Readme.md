@@ -112,7 +112,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ### Contact
 
 For any issues or questions, please open an issue on GitHub or contact [benmeehan111@gmail.com](mailto:benmeehan111@gmail.com).
-
----
-
-Feel free to adjust the repository URL, email address, or any other details to match your project's specifics. This `README.md` provides a clear and comprehensive guide for users to get started with your MQTT relay project.
