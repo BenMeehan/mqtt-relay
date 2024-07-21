@@ -4,6 +4,10 @@
 
 The MQTT Relay is a service that listens to MQTT topics from a broker and publishes the received messages to a queue system like NATS or Kafka. This project provides a modular and extensible solution for message relaying and transformation between different messaging systems.
 
+It was written to solve an IOT use case like below, where there is a huge influx of messages (or metrics) being published through MQTT and the backend services may not be able to handle them all (due to database constraints). MQTT Relay acts kind of like a queue source providing authentication and buffering the messages temporarily.
+
+![](example.png)
+
 ## Features
 
 - **MQTT Client:** Connects to an MQTT broker and subscribes to specified topics.
