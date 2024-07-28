@@ -4,15 +4,17 @@
 
 The MQTT Relay is a service that listens to MQTT topics from a broker and publishes the received messages to a queue system like NATS or Kafka. This project provides a modular and extensible solution for message relaying and transformation between different messaging systems.
 
-It was written to solve an IOT use case like below, where there is a huge influx of messages (or metrics) being published through MQTT and the backend services may not be able to handle them all (due to database constraints). MQTT Relay acts kind of like a queue source providing authentication and buffering the messages temporarily.
+It was written to solve an IoT use case like below, where there is a huge influx of messages (or metrics) being published through MQTT and the backend services may not be able to handle them all (due to database constraints). MQTT Relay acts as a queue source providing authentication and buffering the messages temporarily.
 
-![](_images/relay.png)
+![MQTT Relay Architecture](_images/relay.png)
 
 ## Features
 
 - **MQTT Client:** Connects to an MQTT broker and subscribes to specified topics.
 - **Queue Integration:** Supports publishing received messages to NATS or Kafka queues.
 - **Configurable:** Allows detailed configuration for MQTT topics and queue mappings.
+- **Secure Connections:** Supports TLS/SSL for secure MQTT and NATS connections.
+- **Logging:** Provides detailed logging for troubleshooting and monitoring.
 
 ## Getting Started
 
@@ -48,6 +50,11 @@ Create a configuration file named `config/config.yaml`. Here’s a sample config
 mqtt:
   broker: "tcp://broker.hivemq.com:1883"
   clientID: "mqtt_relay"
+  username: "your_mqtt_username"
+  password: "your_mqtt_password"
+  caCertFile: "path/to/ca.crt"
+  clientCertFile: "path/to/client.crt"
+  clientKeyFile: "path/to/client.key"
   topics:
     - mqttTopic: "topic/one"
       queueTopic: "queue_topic_one"
@@ -55,11 +62,25 @@ mqtt:
       queueTopic: "queue_topic_two"
     - mqttTopic: "topic/three"
       queueTopic: "queue_topic_three"
+nats:
+  url: "tls://your_nats_server:4222"
+  username: "your_nats_username"
+  password: "your_nats_password"
+  caCertFile: "path/to/nats/ca.crt"
 ```
 
-- **broker:** The MQTT broker URL.
-- **clientID:** The client ID for the MQTT connection.
-- **topics:** Mapping between MQTT topics and queue topics.
+- **mqtt.broker:** The MQTT broker URL.
+- **mqtt.clientID:** The client ID for the MQTT connection.
+- **mqtt.username:** The username for the MQTT broker.
+- **mqtt.password:** The password for the MQTT broker.
+- **mqtt.caCertFile:** The path to the CA certificate for MQTT.
+- **mqtt.clientCertFile:** The path to the client certificate for MQTT.
+- **mqtt.clientKeyFile:** The path to the client key for MQTT.
+- **mqtt.topics:** Mapping between MQTT topics and queue topics.
+- **nats.url:** The NATS broker URL.
+- **nats.username:** The username for the NATS broker.
+- **nats.password:** The password for the NATS broker.
+- **nats.caCertFile:** The path to the CA certificate for NATS.
 
 ### Running the Project
 

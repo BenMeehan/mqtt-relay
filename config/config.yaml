@@ -1,6 +1,11 @@
 mqtt:
   broker: "tcp://broker.hivemq.com:1883"
   clientID: "mqtt_relay"
+  username: "your_mqtt_username"
+  password: "your_mqtt_password"
+  caCertFile: "path/to/ca.crt"
+  clientCertFile: "path/to/client.crt"
+  clientKeyFile: "path/to/client.key"
   topics:
     - mqttTopic: "topic/one"
       queueTopic: "queue_topic_one"
@@ -8,3 +13,8 @@ mqtt:
       queueTopic: "queue_topic_two"
     - mqttTopic: "topic/three"
       queueTopic: "queue_topic_three"
+nats:
+  url: "tls://your_nats_server:4222"
+  username: "your_nats_username"
+  password: "your_nats_password"
+  caCertFile: "path/to/nats/ca.crt"
