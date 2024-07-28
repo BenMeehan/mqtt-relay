@@ -1,7 +1,10 @@
 package mqtt
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
+	"io/ioutil"
 	"log"
 
 	"github.com/benmeehan/mqtt-relay/config"
@@ -19,13 +22,26 @@ type MQTTClient struct {
 }
 
 // NewMQTTClient creates a new MQTT client with the provided configuration and message handler.
-func NewMQTTClient(cfg *config.Config, q queue.Queue, handler mqtt.MessageHandler) *MQTTClient {
+func NewMQTTClient(cfg *config.Config, q queue.Queue, handler mqtt.MessageHandler) (*MQTTClient, error) {
 	clientID := fmt.Sprintf("%s-%s", cfg.MQTT.ClientID, uuid.New().String())
 
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(cfg.MQTT.Broker)
 	opts.SetClientID(clientID)
 	opts.SetDefaultPublishHandler(handler)
+
+	if cfg.MQTT.Username != "" && cfg.MQTT.Password != "" {
+		opts.SetUsername(cfg.MQTT.Username)
+		opts.SetPassword(cfg.MQTT.Password)
+	}
+
+	if cfg.MQTT.CACertFile != "" && cfg.MQTT.ClientCertFile != "" && cfg.MQTT.ClientKeyFile != "" {
+		tlsConfig, err := newTLSConfig(cfg.MQTT.CACertFile, cfg.MQTT.ClientCertFile, cfg.MQTT.ClientKeyFile)
+		if err != nil {
+			return nil, err
+		}
+		opts.SetTLSConfig(tlsConfig)
+	}
 
 	client := mqtt.NewClient(opts)
 
@@ -34,7 +50,7 @@ func NewMQTTClient(cfg *config.Config, q queue.Queue, handler mqtt.MessageHandle
 		Config:        cfg,
 		Queue:         q,
 		MessageHandler: handler,
-	}
+	}, nil
 }
 
 // Connect connects the MQTT client to the broker.
@@ -61,4 +77,27 @@ func (c *MQTTClient) Subscribe() error {
 // Disconnect disconnects the MQTT client from the broker.
 func (c *MQTTClient) Disconnect() {
 	c.Client.Disconnect(250)
+}
+
+// newTLSConfig creates a TLS configuration for the MQTT client.
+func newTLSConfig(caCertFile, clientCertFile, clientKeyFile string) (*tls.Config, error) {
+	caCert, err := ioutil.ReadFile(caCertFile)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read CA certificate: %w", err)
+	}
+
+	caCertPool := x509.NewCertPool()
+	if !caCertPool.AppendCertsFromPEM(caCert) {
+		return nil, fmt.Errorf("failed to append CA certificate")
+	}
+
+	clientCert, err := tls.LoadX509KeyPair(clientCertFile, clientKeyFile)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load client certificate and key: %w", err)
+	}
+
+	return &tls.Config{
+		RootCAs:      caCertPool,
+		Certificates: []tls.Certificate{clientCert},
+	}, nil
 }

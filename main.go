@@ -19,7 +19,7 @@ func main() {
 	}
 
 	// Create NATS queue
-	q, err := queue.NewNATSQueue()
+	q, err := queue.NewNATSQueue(cfg)
 	if err != nil {
 		log.Fatalf("Failed to create NATS queue: %v", err)
 	}
@@ -35,7 +35,10 @@ func main() {
 	handler := &mqtt.DefaultMessageHandler{Queue: q, TopicMappings: topicMappings}
 
 	// Create and configure MQTT client
-	client := mqtt.NewMQTTClient(cfg, q, handler.HandleMessage)
+	client, err := mqtt.NewMQTTClient(cfg, q, handler.HandleMessage)
+	if err != nil {
+		log.Fatalf("Failed to create MQTT client: %v", err)
+	}
 
 	// Connect to the MQTT broker
 	if err := client.Connect(); err != nil {
